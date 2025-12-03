@@ -1,0 +1,246 @@
+# Infrastructure Health Check Configuration (30 items)
+# OS: 10, Kubernetes: 10, K8s Services: 10
+
+check_items:
+  # ===== OS Check Items (10) =====
+  os:
+    - id: OS-001
+      name: "Disk Usage"
+      description: "Root filesystem disk usage check"
+      command: "df -h / | awk 'NR==2{gsub(/%/,\"\",$5); print $5}'"
+      threshold: 80
+      unit: "%"
+      
+    - id: OS-002
+      name: "Memory Usage"
+      description: "System memory usage check"
+      command: "free -m | awk 'NR==2{printf \"%.1f\", $3*100/$2}'"
+      threshold: 85
+      unit: "%"
+      
+    - id: OS-003
+      name: "CPU Usage"
+      description: "Average CPU usage check"
+      command: "top -bn1 | grep 'Cpu(s)' | awk '{print $2}' | cut -d'.' -f1"
+      threshold: 90
+      unit: "%"
+      
+    - id: OS-004
+      name: "System Uptime"
+      description: "System uptime duration"
+      command: "uptime -p"
+      threshold: null
+      unit: ""
+      
+    - id: OS-005
+      name: "Zombie Processes"
+      description: "Number of zombie processes"
+      command: "ps aux 2>/dev/null | awk '$8==\"Z\"' | wc -l"
+      threshold: 0
+      unit: ""
+      
+    - id: OS-006
+      name: "Load Average"
+      description: "1-minute load average"
+      command: "cat /proc/loadavg | awk '{print $1}'"
+      threshold: 4.0
+      unit: ""
+      
+    - id: OS-007
+      name: "Swap Usage"
+      description: "Swap memory usage check"
+      command: "free -m | awk 'NR==3{if($2>0) printf \"%.1f\", $3*100/$2; else print \"0\"}'"
+      threshold: 50
+      unit: "%"
+      
+    - id: OS-008
+      name: "Open Files"
+      description: "System-wide open file descriptor count"
+      command: "cat /proc/sys/fs/file-nr | awk '{print $1}'"
+      threshold: 50000
+      unit: ""
+
+    - id: OS-009
+      name: "Network Connections"
+      description: "ESTABLISHED state TCP connection count"
+      command: "ss -t state established 2>/dev/null | wc -l"
+      threshold: 1000
+      unit: ""
+      
+    - id: OS-010
+      name: "Kernel Version"
+      description: "Current kernel version info"
+      command: "uname -r"
+      threshold: null
+      unit: ""
+
+  # ===== Kubernetes Cluster Check Items (10) =====
+  kubernetes:
+    - id: K8S-001
+      name: "Node Status"
+      description: "All nodes Ready status check"
+      command: "kubectl get nodes --no-headers 2>/dev/null | awk '{print $1\":\"$2}' || echo 'N/A'"
+      expected: "Ready"
+      
+    - id: K8S-002
+      name: "Node CPU Usage"
+      description: "Per-node CPU usage"
+      command: "kubectl top nodes --no-headers 2>/dev/null | awk '{print $1\":\"$3}' || echo 'N/A'"
+      threshold: 80
+      unit: "%"
+      
+    - id: K8S-003
+      name: "Node Memory Usage"
+      description: "Per-node memory usage"
+      command: "kubectl top nodes --no-headers 2>/dev/null | awk '{print $1\":\"$5}' || echo 'N/A'"
+      threshold: 80
+      unit: "%"
+      
+    - id: K8S-004
+      name: "kube-system Pod Status"
+      description: "kube-system namespace pod status"
+      command: "kubectl get pods -n kube-system --no-headers 2>/dev/null | awk '{print $1\":\"$3}' || echo 'N/A'"
+      expected: "Running"
+      
+    - id: K8S-005
+      name: "PV Status"
+      description: "PersistentVolume binding status"
+      command: "kubectl get pv --no-headers 2>/dev/null | awk '{print $1\":\"$5}' || echo 'N/A'"
+      expected: "Bound"
+      
+    - id: K8S-006
+      name: "PVC Status"
+      description: "PersistentVolumeClaim binding status"
+      command: "kubectl get pvc --all-namespaces --no-headers 2>/dev/null | awk '{print $2\":\"$3}' || echo 'N/A'"
+      expected: "Bound"
+      
+    - id: K8S-007
+      name: "Cluster Warning Events"
+      description: "Recent warning event count"
+      command: "kubectl get events --all-namespaces --field-selector type=Warning 2>/dev/null | wc -l || echo '0'"
+      threshold: 10
+      unit: ""
+      
+    - id: K8S-008
+      name: "NotReady Nodes"
+      description: "NotReady state node count"
+      command: "kubectl get nodes 2>/dev/null | grep -c NotReady || echo '0'"
+      threshold: 0
+      unit: ""
+      
+    - id: K8S-009
+      name: "Cluster Version"
+      description: "Kubernetes cluster version"
+      command: "kubectl version --short 2>/dev/null | grep Server | awk '{print $3}' || echo 'N/A'"
+      threshold: null
+      unit: ""
+      
+    - id: K8S-010
+      name: "Namespace Count"
+      description: "Total namespace count"
+      command: "kubectl get namespaces --no-headers 2>/dev/null | wc -l || echo '0'"
+      threshold: null
+      unit: ""
+
+  # ===== K8s Service Check Items (10) =====
+  services:
+    - id: SVC-001
+      name: "Deployment Status"
+      description: "All Deployments ready status"
+      command: "kubectl get deployments --all-namespaces --no-headers 2>/dev/null | awk '{print $2\":\"$3\"/\"$4}' || echo 'N/A'"
+      check_type: "replica_match"
+      
+    - id: SVC-002
+      name: "StatefulSet Status"
+      description: "All StatefulSets ready status"
+      command: "kubectl get statefulsets --all-namespaces --no-headers 2>/dev/null | awk '{print $2\":\"$3}' || echo 'N/A'"
+      check_type: "replica_match"
+      
+    - id: SVC-003
+      name: "DaemonSet Status"
+      description: "All DaemonSets ready status"
+      command: "kubectl get daemonsets --all-namespaces --no-headers 2>/dev/null | awk '{print $2\":\"$4\"/\"$3}' || echo 'N/A'"
+      check_type: "replica_match"
+      
+    - id: SVC-004
+      name: "Service Endpoints"
+      description: "Services without endpoints check"
+      command: "kubectl get endpoints --all-namespaces --no-headers 2>/dev/null | awk '$3==\"<none>\"{print $2}' | wc -l || echo '0'"
+      threshold: 0
+      unit: ""
+      
+    - id: SVC-005
+      name: "Ingress Status"
+      description: "Ingress resource count"
+      command: "kubectl get ingress --all-namespaces --no-headers 2>/dev/null | wc -l || echo '0'"
+      threshold: null
+      unit: ""
+      
+    - id: SVC-006
+      name: "High Restart Pods"
+      description: "Pods with 5+ restarts"
+      command: "kubectl get pods --all-namespaces --no-headers 2>/dev/null | awk '$5>=5{count++}END{print count+0}' || echo '0'"
+      threshold: 0
+      unit: ""
+      
+    - id: SVC-007
+      name: "Pending Pods"
+      description: "Pending state pod count"
+      command: "kubectl get pods --all-namespaces --field-selector=status.phase=Pending 2>/dev/null | wc -l || echo '0'"
+      threshold: 0
+      unit: ""
+      
+    - id: SVC-008
+      name: "Failed Pods"
+      description: "Failed state pod count"
+      command: "kubectl get pods --all-namespaces --field-selector=status.phase=Failed 2>/dev/null | wc -l || echo '0'"
+      threshold: 0
+      unit: ""
+      
+    - id: SVC-009
+      name: "CronJob Status"
+      description: "Total CronJob count"
+      command: "kubectl get cronjobs --all-namespaces --no-headers 2>/dev/null | wc -l || echo '0'"
+      threshold: null
+      unit: ""
+      
+    - id: SVC-010
+      name: "Failed Jobs"
+      description: "Failed state job count"
+      command: "kubectl get jobs --all-namespaces --no-headers 2>/dev/null | awk '$3==0 && $4>0{count++}END{print count+0}' || echo '0'"
+      threshold: 0
+      unit: ""
+
+# Notification Settings
+notifications:
+  email:
+    enabled: false
+    smtp_server: "smtp.example.com"
+    smtp_port: 587
+    sender: "infra-check@example.com"
+    recipients:
+      - "admin@example.com"
+    use_tls: true
+    
+  slack:
+    enabled: false
+    webhook_url: ""
+    channel: "#infra-alerts"
+    
+  teams:
+    enabled: false
+    webhook_url: ""
+    
+  discord:
+    enabled: false
+    webhook_url: ""
+
+# Report Settings
+report:
+  type: "weekly"
+  output_formats:
+    - csv
+    - docx
+  output_dir: "./output"
+  company_name: "Your Company"
+  team_name: "Infrastructure Team"
