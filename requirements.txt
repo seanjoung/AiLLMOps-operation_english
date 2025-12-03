@@ -1,0 +1,11 @@
+# Infrastructure Health Check System - Python Dependencies
+# Install: pip install -r requirements.txt
+
+# Required
+PyYAML>=6.0
+python-docx>=0.8.11
+requests>=2.28.0
+
+# Optional (for extended features)
+# openpyxl>=3.0.0  # Direct Excel file creation
+# jinja2>=3.0.0    # Template-based report generation

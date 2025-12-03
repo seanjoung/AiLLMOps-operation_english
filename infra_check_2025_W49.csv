@@ -1,0 +1,65 @@
+﻿# 2025 Week 49 Infrastructure Health Check Report
+# Generated: 2025-12-03 08:03:02
+# Company: Your Company
+# Team: Infrastructure Team
+# Total Items: 30
+# OK: 30 / Warning: 0 / Critical: 0 / Unknown: 0
+
+CheckID,CheckItem,Category,Description,Status,Value,Threshold,Message,Timestamp
+OS-001,Disk Usage,OS,Root filesystem disk usage check,OK,45,80%,Within normal range,2025-12-03T08:03:02.061437
+OS-002,Memory Usage,OS,System memory usage check,OK,62.5,85%,Within normal range,2025-12-03T08:03:02.061456
+OS-003,CPU Usage,OS,Average CPU usage check,OK,23,90%,Within normal range,2025-12-03T08:03:02.061461
+OS-004,System Uptime,OS,System uptime duration,OK,"up 15 days, 4 hours, 32 minutes",-,System running normally,2025-12-03T08:03:02.061465
+OS-005,Zombie Processes,OS,Number of zombie processes,OK,0,-,No zombie processes,2025-12-03T08:03:02.061469
+OS-006,Load Average,OS,1-minute load average,OK,1.25,4.0,Within normal range,2025-12-03T08:03:02.061472
+OS-007,Swap Usage,OS,Swap memory usage check,OK,12.3,50%,Within normal range,2025-12-03T08:03:02.061476
+OS-008,Open Files,OS,System-wide open file descriptor count,OK,3456,50000,Within normal range,2025-12-03T08:03:02.061479
+OS-009,Network Connections,OS,ESTABLISHED state TCP connection count,OK,128,1000,Within normal range,2025-12-03T08:03:02.061482
+OS-010,Kernel Version,OS,Current kernel version info,OK,5.15.0-91-generic,-,Kernel info retrieved,2025-12-03T08:03:02.061485
+K8S-001,Node Status,Kubernetes,All nodes Ready status check,OK,"master-01:Ready
+worker-01:Ready
+worker-02:Ready
+worker-03:Ready",-,All nodes healthy (4/4),2025-12-03T08:03:02.061525
+K8S-002,Node CPU Usage,Kubernetes,Per-node CPU usage,OK,"master-01:32%
+worker-01:45%
+worker-02:38%
+worker-03:52%",80%,All node CPU within limits,2025-12-03T08:03:02.061530
+K8S-003,Node Memory Usage,Kubernetes,Per-node memory usage,OK,"master-01:58%
+worker-01:62%
+worker-02:55%
+worker-03:71%",80%,All node memory within limits,2025-12-03T08:03:02.061533
+K8S-004,kube-system Pod Status,Kubernetes,kube-system namespace pod status,OK,"coredns-5d78c9869d-abc12:Running
+coredns-5d78c9869d-def34:Running
+etcd-master-01:Running
+kube-apiserver-master-01:Running
+kube-controller-manager-master-01:Running
+kube-proxy-xxxxx:Running
+kube-scheduler-master-01:Running",-,All system pods healthy (7/7),2025-12-03T08:03:02.061536
+K8S-005,PV Status,Kubernetes,PersistentVolume binding status,OK,"pv-data-01:Bound
+pv-data-02:Bound
+pv-logs-01:Bound",-,All PVs bound (3/3),2025-12-03T08:03:02.061540
+K8S-006,PVC Status,Kubernetes,PersistentVolumeClaim binding status,OK,"data-pvc-01:Bound
+data-pvc-02:Bound
+logs-pvc-01:Bound",-,All PVCs bound (3/3),2025-12-03T08:03:02.061543
+K8S-007,Cluster Warning Events,Kubernetes,Recent warning event count,OK,3,10,Warning events within threshold,2025-12-03T08:03:02.061546
+K8S-008,NotReady Nodes,Kubernetes,NotReady state node count,OK,0,-,No NotReady nodes,2025-12-03T08:03:02.061549
+K8S-009,Cluster Version,Kubernetes,Kubernetes cluster version,OK,v1.28.4,-,Version info retrieved,2025-12-03T08:03:02.061552
+K8S-010,Namespace Count,Kubernetes,Total namespace count,OK,8,-,8 namespaces,2025-12-03T08:03:02.061555
+SVC-001,Deployment Status,Services,All Deployments ready status,OK,"nginx-deployment:3/3
+api-server:2/2
+worker-deployment:5/5
+redis:1/1
+postgres:1/1",-,All Deployments healthy (5),2025-12-03T08:03:02.061608
+SVC-002,StatefulSet Status,Services,All StatefulSets ready status,OK,"mysql:1/1
+redis:3/3
+elasticsearch:3/3",-,All StatefulSets healthy (3),2025-12-03T08:03:02.061612
+SVC-003,DaemonSet Status,Services,All DaemonSets ready status,OK,"fluentd:4/4
+node-exporter:4/4
+kube-proxy:4/4",-,All DaemonSets healthy (3),2025-12-03T08:03:02.061615
+SVC-004,Service Endpoints,Services,Services without endpoints check,OK,0,-,No services without endpoints,2025-12-03T08:03:02.061618
+SVC-005,Ingress Status,Services,Ingress resource count,OK,5,-,5 Ingress resources,2025-12-03T08:03:02.061621
+SVC-006,High Restart Pods,Services,Pods with 5+ restarts,OK,0,-,No high-restart pods,2025-12-03T08:03:02.061624
+SVC-007,Pending Pods,Services,Pending state pod count,OK,0,-,No pending pods,2025-12-03T08:03:02.061626
+SVC-008,Failed Pods,Services,Failed state pod count,OK,0,-,No failed pods,2025-12-03T08:03:02.061629
+SVC-009,CronJob Status,Services,Total CronJob count,OK,3,-,3 CronJobs,2025-12-03T08:03:02.061632
+SVC-010,Failed Jobs,Services,Failed state job count,OK,0,-,No failed jobs,2025-12-03T08:03:02.061635
