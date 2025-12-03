@@ -30,8 +30,12 @@ Automatically monitor OS, Kubernetes clusters, and K8s services, generate CSV/DO
 
 ---
 
-## ✨ Features
+<img width="859" height="988" alt="image" src="https://github.com/user-attachments/assets/46f72405-b88f-435b-8379-530bceffb47a" />
 
+<img width="1007" height="1010" alt="image" src="https://github.com/user-attachments/assets/2e6216e2-a129-42eb-b81d-bd7c88de0790" />
+
+
+## ✨ Features
 | Feature | Description |
 |---------|-------------|
 | 🖥️ **OS Monitoring** | Disk, Memory, CPU, Processes - 10 items |
